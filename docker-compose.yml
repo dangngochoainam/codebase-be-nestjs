@@ -1,21 +1,38 @@
 version: "3"
 
 services:
-  codebase-backend:
-    build:
-      context: .
-      dockerfile: ./docker/Dockerfile
-    ports:
-      - 9009:9000
-      - 19009:9229
-    env_file:
-      - .env
+  # codebase-backend:
+  #   build:
+  #     context: .
+  #     dockerfile: ./docker/Dockerfile
+  #   ports:
+  #     - 9009:9000
+  #     - 19009:9229
+  #   env_file:
+  #     - .env
+  #   volumes:
+  #     - .:/usr/src/codebase
+  #   networks:
+  #     - default
+
+  db-log:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      PGDATA: /data/postgres
+      POSTGRES_DB: codebase
     volumes:
-      - .:/usr/src/codebase
+      - db-log:/data/postgres
+    ports:
+      - "5433:5432"
     networks:
       - default
+    restart: always
 
-# volumes:
+volumes:
+  db-log:
+    # external: true
 
 networks:
   default:
