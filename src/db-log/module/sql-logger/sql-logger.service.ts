@@ -4,15 +4,15 @@ import { LogEntity } from "src/db-log/entity/log.entity";
 import { Repository } from "typeorm";
 import { SQL_LOG_DB_CONNECTION_NAME } from "./db-logger";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ConfigService } from "@nestjs/config";
+import { CoreEnvironmentService } from "src/core/environment/environment.service";
+import { ExampleEnvironment } from "src/module/environment/environment";
 
 @Injectable()
 export class SqlLoggerService extends BaseSqlLoggerService {
 	constructor(
 		@InjectRepository(LogEntity, SQL_LOG_DB_CONNECTION_NAME) private readonly logRepository: Repository<LogEntity>,
-		private readonly configService: ConfigService,
 	) {
-		super(configService.get("INSTANCE_ID") || "no-instance-id");
+		super();
 	}
 
 	public insertLog(payload: LogEntity): void {

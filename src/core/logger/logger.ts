@@ -3,6 +3,7 @@ import { inspect } from "util";
 import { LoggerService } from "@nestjs/common";
 import { ICustomLogging } from "./logger.service";
 import { BaseSqlLoggerService } from "./sql-logger.service";
+import { CoreEnvironmentProvider } from "../environment/environment.service";
 
 export const pino = Pino.pino({
 	level: "trace",
@@ -12,10 +13,7 @@ export const pino = Pino.pino({
 });
 
 export class CommonLogger implements LoggerService {
-	constructor(
-		protected context: string,
-		protected LOG_DEBUG_MODE: boolean = false,
-	) {}
+	constructor(protected context: string) {}
 
 	public log(message: unknown, customLogging?: ICustomLogging): void {
 		pino.trace(
@@ -47,8 +45,7 @@ export class CommonLogger implements LoggerService {
 	}
 
 	public debug(message: unknown, context: string = ""): void {
-		// TODO: find a way to use LOG_DEBUG_MODE environment variable
-		if (this.LOG_DEBUG_MODE) {
+		if (CoreEnvironmentProvider.useValue.ENVIRONMENT.LOG_DEBUG_MODE) {
 			pino.debug(this.context + `[${context}]` + `${typeof message === "object" ? inspect(message) : message}`);
 		}
 	}
@@ -63,8 +60,7 @@ export class SqlLogger extends CommonLogger {
 	}
 
 	public debug(message: unknown, context: string = ""): void {
-		// TODO: find a way to use LOG_DEBUG_MODE environment variable
-		if (this.LOG_DEBUG_MODE) {
+		if (CoreEnvironmentProvider.useValue.ENVIRONMENT.LOG_DEBUG_MODE) {
 			super.debug(message, context);
 		}
 		if (this.sqlLoggerService) {
