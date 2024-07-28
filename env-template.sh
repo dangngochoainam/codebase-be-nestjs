@@ -1,0 +1,10 @@
+export NODE_ENV=dev 
+export INSTANCE_ID=INSTANCE_ID 
+export LOG_DEBUG_MODE=false 
+export PORT=9000 
+export DB_LOG_HOST=localhost 
+export DB_LOG_PORT=5433 
+export DB_LOG_DATABASE=codebase 
+export DB_LOG_SCHEMA=log 
+export DB_LOG_USERNAME=postgres 
+export DB_LOG_PASSWORD=postgres 

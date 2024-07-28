@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import Pino from "pino";
 import { BaseSqlLoggerService } from "./sql-logger.service";
+import { CoreEnvironmentProvider } from "../environment/environment.service";
 
 export interface ICustomLogging {
 	traceId?: string;
@@ -65,26 +66,25 @@ export class ContextLogger {
 	}
 
 	public debug(customLogging: ICustomLogging, message: string | unknown, error?: Error): void {
-		// TODO: find the way to read environment variable
-		// if (CoreEnvironmentProvider.useValue.ENVIRONMENT.LOG_DEBUG_MODE) {
-		// 	if (typeof message === "string") {
-		// 		this.loggerService.pino.debug(
-		// 			{
-		// 				traceId: customLogging.traceId,
-		// 				context: customLogging.context || this.context,
-		// 				parentContext: this.context,
-		// 			},
-		// 			message,
-		// 		);
-		// 	} else {
-		// 		this.loggerService.pino.debug({
-		// 			traceId: customLogging.traceId,
-		// 			context: customLogging.context || this.context,
-		// 			parentContext: this.context,
-		// 			message,
-		// 		});
-		// 	}
-		// }
+		if (CoreEnvironmentProvider.useValue.ENVIRONMENT.LOG_DEBUG_MODE) {
+			if (typeof message === "string") {
+				this.loggerService.pino.debug(
+					{
+						traceId: customLogging.traceId,
+						context: customLogging.context || this.context,
+						parentContext: this.context,
+					},
+					message,
+				);
+			} else {
+				this.loggerService.pino.debug({
+					traceId: customLogging.traceId,
+					context: customLogging.context || this.context,
+					parentContext: this.context,
+					message,
+				});
+			}
+		}
 		const sqlLog = this.loggerService.sqlLoggerService.debug(
 			{ name: this.loggerService.name, ...customLogging },
 			message,
@@ -134,14 +134,9 @@ export class LoggerService {
 	}
 
 	public static getInstance(sqlLoggerService: BaseSqlLoggerService, name: string): LoggerService {
-		if (instance) {
-			return instance.setName(name);
-		}
-		instance = new LoggerService(sqlLoggerService, name);
-		return instance;
+		return instance ? instance.setName(name || "Unset") : (instance = new LoggerService(sqlLoggerService, name));
 	}
 
-	// TODO: define type for loggerService
 	public constructor(
 		public sqlLoggerService: BaseSqlLoggerService,
 		public name: string = "Unset",
