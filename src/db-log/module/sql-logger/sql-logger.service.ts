@@ -1,11 +1,9 @@
 import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
 import { BaseSqlLoggerService } from "src/core/logger/sql-logger.service";
 import { LogEntity } from "src/db-log/entity/log.entity";
 import { Repository } from "typeorm";
 import { SQL_LOG_DB_CONNECTION_NAME } from "./db-logger";
-import { InjectRepository } from "@nestjs/typeorm";
-import { CoreEnvironmentService } from "src/core/environment/environment.service";
-import { ExampleEnvironment } from "src/module/environment/environment";
 
 @Injectable()
 export class SqlLoggerService extends BaseSqlLoggerService {

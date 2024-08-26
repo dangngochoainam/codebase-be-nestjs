@@ -3,9 +3,14 @@ import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { CoreEnvironmentService } from "./core/environment/environment.service";
 import { CoreEnvironmentModule } from "./core/environment/evironment.module";
-import { LoggerModule } from "./core/logger/logger.module";
+import { LoggerModule, SQL_LOGGER_PROVIDER } from "./core/logger/logger.module";
 import { LogDbModule } from "./db-log/db.module";
 import { ExampleEnvironment } from "./module/environment/environment";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
+import { typeOrmOptions as exampleTypeOrmOptions } from "./db-example/typeorm.module";
+import { SqlLoggerService } from "./db-log/module/sql-logger/sql-logger.service";
+import { DBLogger } from "./core/logger/db-logger";
+import { UserModule } from "./module/user/user.module";
 
 @Module({
 	imports: [
@@ -24,6 +29,22 @@ import { ExampleEnvironment } from "./module/environment/environment";
 		}),
 		LoggerModule.factory("Example__Service"),
 		CoreEnvironmentModule.create(ExampleEnvironment),
+		TypeOrmModule.forRootAsync({
+			name: exampleTypeOrmOptions.name,
+			inject: [CoreEnvironmentService, SQL_LOGGER_PROVIDER],
+			useFactory: (env: CoreEnvironmentService<ExampleEnvironment>, sqlLoggerService: SqlLoggerService) =>
+				({
+					host: env.ENVIRONMENT.DB_EXAMPLE_HOST,
+					port: env.ENVIRONMENT.DB_EXAMPLE_PORT,
+					schema: env.ENVIRONMENT.DB_EXAMPLE_SCHEMA,
+					database: env.ENVIRONMENT.DB_EXAMPLE_DATABASE,
+					username: env.ENVIRONMENT.DB_EXAMPLE_USERNAME,
+					password: env.ENVIRONMENT.DB_EXAMPLE_PASSWORD,
+					...exampleTypeOrmOptions,
+					logger: new DBLogger(sqlLoggerService, "Example__Service__DB", exampleTypeOrmOptions.name || ""),
+				}) as TypeOrmModuleOptions,
+		}),
+		UserModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

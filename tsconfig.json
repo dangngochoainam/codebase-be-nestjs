@@ -19,6 +19,17 @@
 		"alwaysStrict": true,
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"noEmitOnError": true,
+		"resolveJsonModule": true,
+		"preserveSymlinks": true,
+		"typeRoots": [
+			"node_modules/@types",
+			"./core/@types"
+		],
+		"esModuleInterop": true,
+		"importHelpers": true,
   }
 }

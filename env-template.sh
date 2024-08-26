@@ -1,6 +1,12 @@
 export NODE_ENV=dev 
 export INSTANCE_ID=INSTANCE_ID 
 export LOG_DEBUG_MODE=false 
+export DB_EXAMPLE_HOST=localhost 
+export DB_EXAMPLE_PORT=5433 
+export DB_EXAMPLE_USERNAME=postgres 
+export DB_EXAMPLE_PASSWORD=postgres 
+export DB_EXAMPLE_DATABASE=codebase 
+export DB_EXAMPLE_SCHEMA=example 
 export PORT=9000 
 export DB_LOG_HOST=localhost 
 export DB_LOG_PORT=5433 

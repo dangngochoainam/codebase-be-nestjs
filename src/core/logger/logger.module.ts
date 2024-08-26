@@ -1,4 +1,4 @@
-import { DynamicModule, FactoryProvider, Global, Module } from "@nestjs/common";
+import { DynamicModule, Global, Module } from "@nestjs/common";
 import { LoggerService } from "./logger.service";
 import { BaseSqlLoggerService } from "./sql-logger.service";
 

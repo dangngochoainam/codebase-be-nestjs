@@ -1,9 +1,8 @@
-import { v4 } from "uuid";
-import { ISqlLoggerPayload, SQL_LOGGER_TYPE } from "./sql-logger.payload";
-import { ICustomLogging } from "./logger.service";
 import { inspect } from "util";
-import { CoreEnvironmentProvider, CoreEnvironmentService } from "../environment/environment.service";
-import { ExampleEnvironment } from "src/module/environment/environment";
+import { v4 } from "uuid";
+import { CoreEnvironmentProvider } from "../environment/environment.service";
+import { ICustomLogging } from "./logger.service";
+import { ISqlLoggerPayload, SQL_LOGGER_TYPE } from "./sql-logger.payload";
 
 export abstract class BaseSqlLoggerService {
 	abstract insertLog(payload: ISqlLoggerPayload): void;
@@ -15,7 +14,7 @@ export abstract class BaseSqlLoggerService {
 			name: customLogging.name,
 			context: customLogging.context,
 			type,
-			traceId: customLogging.traceId,
+			traceId: customLogging.traceId || v4(),
 			message: typeof message === "string" ? message : inspect(message),
 		};
 		this.insertLog(log);

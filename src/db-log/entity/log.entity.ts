@@ -1,4 +1,4 @@
-import { Column, Entity, PrimaryColumn, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
 import { ISqlLoggerPayload, SQL_LOGGER_TYPE } from "../../core/logger/sql-logger.payload";
 
 @Entity("log")
@@ -6,8 +6,9 @@ export class LogEntity implements ISqlLoggerPayload {
 	@PrimaryGeneratedColumn()
 	public id!: string;
 
-	@Column()
-	public timestamp: Date = new Date();
+	@CreateDateColumn()
+	@Column({ name: "timestamp", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
+	public timestamp!: Date;
 
 	@Column({ name: "instance_id" })
 	public instanceId!: string;
