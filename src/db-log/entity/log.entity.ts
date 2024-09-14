@@ -16,13 +16,13 @@ export class LogEntity implements ISqlLoggerPayload {
 	@Column()
 	public name?: string;
 
-	@Column({ type: "text" })
+	@Column({ type: "text", nullable: true })
 	public context?: string;
 
 	@Column()
 	public type!: SQL_LOGGER_TYPE;
 
-	@Column({ name: "trace_id" })
+	@Column({ name: "trace_id", nullable: true })
 	public traceId?: string;
 
 	@Column({ type: "text" })

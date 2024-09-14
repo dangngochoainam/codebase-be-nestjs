@@ -27,11 +27,12 @@ export class GetUserListDTO extends DTO {
 	public static url = "users";
 	public readonly method = METHOD.GET;
 	public paramsDTO = undefined;
+	public queryDTO: GetUserListQueryDTO;
 	public bodyDTO = undefined;
 	public readonly responseDTOClass = GetUserListResponseDTO;
 	public readonly url: string = GetUserListDTO.url;
 
-	public constructor(public queryDTO: GetUserListQueryDTO) {
+	public constructor(queryDTO: GetUserListQueryDTO) {
 		super();
 		this.queryDTO = queryDTO;
 	}

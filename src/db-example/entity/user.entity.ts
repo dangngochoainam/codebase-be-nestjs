@@ -7,7 +7,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class User extends BaseEntity {
 	@Expose()
 	@PrimaryGeneratedColumn("uuid", { name: "id" })
-	public Id!: string;
+	public id!: string;
 
 	@Expose()
 	@Column({ name: "email" })

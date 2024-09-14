@@ -3,6 +3,13 @@ import { UserRepository } from "../database-access-operations/user/user.reposito
 import { Injectable } from "@nestjs/common";
 import { GetUserListQueryDTO, GetUserListResponseDTO, UserItemDTO } from "src/shared/dto/user/get-user-list.dto";
 import { plainToInstance } from "class-transformer";
+import { GetProfileParamDTO, GetProfileResponseDTO } from "src/shared/dto/user/get-profile.dto";
+import {
+	UpdateProfileBodyDTO,
+	UpdateProfileParamDTO,
+	UpdateProfileResponseDTO,
+} from "src/shared/dto/user/update-profile.dto";
+import { RemoveUserParamDTO, RemoveUserResponseDTO } from "src/shared/dto/user/remove-user.dto";
 
 @Injectable()
 export class UserService {
@@ -23,7 +30,55 @@ export class UserService {
 		});
 
 		const userItemDTO = plainToInstance(UserItemDTO, userList);
-		const result = new GetUserListResponseDTO(userItemDTO, query.page as number, userList.length, query.pageSize as number);
+		const result = new GetUserListResponseDTO(
+			userItemDTO,
+			query.page as number,
+			userList.length,
+			query.pageSize as number,
+		);
+
+		return result;
+	}
+
+	public async getProfile(params: GetProfileParamDTO): Promise<GetProfileResponseDTO> {
+		const user = await this.userRepository.sqlFindOne(undefined, {
+			where: {
+				id: params.id,
+			},
+		});
+
+		const result = plainToInstance(GetProfileResponseDTO, user);
+
+		return result;
+	}
+
+	public async updateProfile(
+		params: UpdateProfileParamDTO,
+		body: UpdateProfileBodyDTO,
+	): Promise<UpdateProfileResponseDTO> {
+		const effectdRows = await this.userRepository.sqlUpdate(
+			undefined,
+			{
+				where: {
+					id: params.id,
+				},
+			},
+			body,
+		);
+
+		const result = plainToInstance(UpdateProfileResponseDTO, effectdRows);
+
+		return result;
+	}
+
+	public async removeUser(params: RemoveUserParamDTO): Promise<RemoveUserResponseDTO> {
+		const effectdRows = await this.userRepository.sqlSoftDelete(undefined, {
+			where: {
+				id: params.id,
+			},
+		});
+
+		const result = plainToInstance(RemoveUserResponseDTO, effectdRows);
 
 		return result;
 	}

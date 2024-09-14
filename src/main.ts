@@ -8,7 +8,7 @@ import { BadRequestException, Logger, ValidationPipe } from "@nestjs/common";
 async function bootstrap() {
 	const { PORT } = CoreEnvironmentProvider.useValue.ENVIRONMENT;
 	const app = await NestFactory.create(AppModule, {
-		bodyParser: false,
+		bodyParser: true,
 		logger: new SqlLogger("[CODEBASE__SERVICE]"),
 	});
 	app.useLogger(new SqlLogger("CODEBASE__SERVICE", app.get(SQL_LOGGER_PROVIDER)));
