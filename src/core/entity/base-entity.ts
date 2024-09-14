@@ -4,8 +4,7 @@ import { Column, CreateDateColumn, DeleteDateColumn, UpdateDateColumn } from "ty
 @Exclude()
 export abstract class BaseEntity {
 	@Expose()
-	@CreateDateColumn()
-	@Column({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
+	@CreateDateColumn({ name: "created_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
 	public createdAt!: Date;
 
 	@Expose()
@@ -13,8 +12,7 @@ export abstract class BaseEntity {
 	public createdUser?: string;
 
 	@Expose()
-	@UpdateDateColumn()
-	@Column({ name: "last_modified_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
+	@UpdateDateColumn({ name: "last_modified_at", type: "timestamp with time zone", default: () => "CURRENT_TIMESTAMP" })
 	public lastModifiedAt!: Date;
 
 	@Expose()
@@ -22,7 +20,6 @@ export abstract class BaseEntity {
 	public lastModifiedUser?: string;
 
 	@Expose()
-	@DeleteDateColumn()
-	@Column({ name: "deleted_at", type: "timestamp with time zone", nullable: true })
+	@DeleteDateColumn({ name: "deleted_at", type: "timestamp with time zone", nullable: true })
 	public deletedAt?: Date;
 }
