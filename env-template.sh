@@ -1,4 +1,5 @@
 export NODE_ENV=dev 
+export SHOW_DEBUG_ERROR=true 
 export INSTANCE_ID=INSTANCE_ID 
 export LOG_DEBUG_MODE=true 
 export DB_EXAMPLE_HOST=localhost 

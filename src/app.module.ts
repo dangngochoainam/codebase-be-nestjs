@@ -11,6 +11,8 @@ import { typeOrmOptions as exampleTypeOrmOptions } from "./db-example/typeorm.mo
 import { SqlLoggerService } from "./db-log/module/sql-logger/sql-logger.service";
 import { DBLogger } from "./core/logger/db-logger";
 import { UserModule } from "./module/user/user.module";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { ExampleResponseInterceptor } from "./module/interceptor/response.interceptor";
 
 @Module({
 	imports: [
@@ -47,6 +49,12 @@ import { UserModule } from "./module/user/user.module";
 		UserModule,
 	],
 	controllers: [AppController],
-	providers: [AppService],
+	providers: [
+		AppService,
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: ExampleResponseInterceptor,
+		},
+	],
 })
 export class AppModule {}

@@ -42,3 +42,22 @@ export class ResponseDTO<T> {
 		public debugError?: T,
 	) {}
 }
+
+export class ErrorDetailWithParams {
+	constructor(
+		public code: string,
+		public params: Record<string, string>,
+		public data?: unknown,
+	) {}
+}
+
+export class ResponseErrorDetailDTO<T> extends ResponseDTO<T> {
+	constructor(
+		public message: string,
+		public systemCode: string,
+		public data: T,
+		public debugError?: T,
+	) {
+		super(data, message, systemCode, undefined);
+	}
+}
