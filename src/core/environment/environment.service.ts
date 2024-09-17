@@ -2,7 +2,7 @@ import { Injectable, Logger, ValueProvider } from "@nestjs/common";
 import { Exclude, Expose, plainToClass, Transform, Type } from "class-transformer";
 import { IsBoolean, IsNotEmpty, IsNumber, IsString, validateSync } from "class-validator";
 import { createWriteStream } from "fs";
-import { stringToBoolean } from "src/shared/utils/class-transformer";
+import { optionalStringToBoolean, stringToBoolean } from "src/shared/utils/class-transformer";
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -12,6 +12,11 @@ export class CoreEnvironment {
 	@IsString()
 	@Type(() => String)
 	public NODE_ENV: string = "dev";
+
+	@Expose()
+	@IsBoolean()
+	@Transform(optionalStringToBoolean)
+	public SHOW_DEBUG_ERROR: boolean = false;
 
 	@Expose()
 	@IsString()
