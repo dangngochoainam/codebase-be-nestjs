@@ -1,6 +1,22 @@
-import { Body, Controller, Delete, Get, Param, Put, Query } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Delete,
+	FileTypeValidator,
+	Get,
+	MaxFileSizeValidator,
+	Param,
+	ParseFilePipe,
+	Put,
+	Query,
+	UploadedFile,
+	UseInterceptors,
+} from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
+import { allowFileTypes, maxFileSize } from "src/shared/constants/file.constant";
 import { GetProfileDTO, GetProfileParamDTO, GetProfileResponseDTO } from "src/shared/dto/user/get-profile.dto";
 import { GetUserListDTO, GetUserListQueryDTO, GetUserListResponseDTO } from "src/shared/dto/user/get-user-list.dto";
+import { RemoveUserDTO, RemoveUserParamDTO, RemoveUserResponseDTO } from "src/shared/dto/user/remove-user.dto";
 import {
 	UpdateProfileBodyDTO,
 	UpdateProfileDTO,
@@ -8,7 +24,6 @@ import {
 	UpdateProfileResponseDTO,
 } from "src/shared/dto/user/update-profile.dto";
 import { UserService } from "./user.service";
-import { RemoveUserDTO, RemoveUserParamDTO, RemoveUserResponseDTO } from "src/shared/dto/user/remove-user.dto";
 
 @Controller()
 export class UserController {
@@ -24,12 +39,23 @@ export class UserController {
 		return this.userService.getProfile(params);
 	}
 
+	@UseInterceptors(FileInterceptor("file"))
 	@Put(UpdateProfileDTO.url)
 	public async updateProfile(
+		@UploadedFile(
+			new ParseFilePipe({
+				fileIsRequired: false,
+				validators: [
+					new FileTypeValidator({ fileType: allowFileTypes }),
+					new MaxFileSizeValidator({ maxSize: maxFileSize }),
+				],
+			}),
+		)
+		file: Express.Multer.File,
 		@Param() params: UpdateProfileParamDTO,
 		@Body() body: UpdateProfileBodyDTO,
 	): Promise<UpdateProfileResponseDTO> {
-		return this.userService.updateProfile(params, body);
+		return this.userService.updateProfile(params, body, file);
 	}
 
 	@Delete(RemoveUserDTO.url)

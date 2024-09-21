@@ -115,7 +115,7 @@ export class BaseResponseInterceptor<T, EXTRA_CODE extends string = SYSTEM_CODE>
 			// message: this.systemcodeTransMap[systemCode](t, params),
 			data: errorRes,
 		};
-		this.logger.info({}, `Params: ${params}`);
+		this.logger.info({}, `Params: ${JSON.stringify(params)}`);
 		if (systemCode !== SYSTEM_CODE.SUCCESS && this.envService.ENVIRONMENT.SHOW_DEBUG_ERROR) {
 			resp.debugError = debugError;
 		}
