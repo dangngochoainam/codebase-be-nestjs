@@ -1,16 +1,15 @@
-import { ContextLogger, LoggerService } from "src/core/logger/logger.service";
-import { UserRepository } from "../database-access-operations/user/user.repository";
-import { BadRequestException, Injectable } from "@nestjs/common";
-import { GetUserListQueryDTO, GetUserListResponseDTO, UserItemDTO } from "src/shared/dto/user/get-user-list.dto";
+import { Injectable } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
+import { ContextLogger, LoggerService } from "src/core/logger/logger.service";
 import { GetProfileParamDTO, GetProfileResponseDTO } from "src/shared/dto/user/get-profile.dto";
+import { GetUserListQueryDTO, GetUserListResponseDTO, UserItemDTO } from "src/shared/dto/user/get-user-list.dto";
+import { RemoveUserParamDTO, RemoveUserResponseDTO } from "src/shared/dto/user/remove-user.dto";
 import {
 	UpdateProfileBodyDTO,
 	UpdateProfileParamDTO,
 	UpdateProfileResponseDTO,
 } from "src/shared/dto/user/update-profile.dto";
-import { RemoveUserParamDTO, RemoveUserResponseDTO } from "src/shared/dto/user/remove-user.dto";
-import { SYSTEM_CODE } from "src/shared/dto/code/system-code";
+import { UserRepository } from "../database-access-operations/user/user.repository";
 
 @Injectable()
 export class UserService {
@@ -29,9 +28,6 @@ export class UserService {
 				email: query.email,
 			},
 		});
-
-		throw new BadRequestException(SYSTEM_CODE.ACCOUNT_INVALID);
-
 		const userItemDTO = plainToInstance(UserItemDTO, userList);
 		const result = new GetUserListResponseDTO(
 			userItemDTO,
@@ -58,7 +54,9 @@ export class UserService {
 	public async updateProfile(
 		params: UpdateProfileParamDTO,
 		body: UpdateProfileBodyDTO,
+		file: Express.Multer.File,
 	): Promise<UpdateProfileResponseDTO> {
+		this.logger.info({}, file.originalname);
 		const effectdRows = await this.userRepository.sqlUpdate(
 			undefined,
 			{

@@ -8,7 +8,7 @@ export const typeOrmOptions: TypeOrmModuleOptions = {
 	type: "postgres",
 	entities: [join(__dirname, "/entity/**.entity{.ts,.js}")],
 	logging: false,
-	synchronize: true,
+	synchronize: false,
 	keepConnectionAlive: true,
 	extra: {
 		connectionLimit: 10,
