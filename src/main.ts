@@ -14,7 +14,7 @@ async function bootstrap() {
 	app.useLogger(new SqlLogger("CODEBASE__SERVICE", app.get(SQL_LOGGER_PROVIDER)));
 
 	app.setGlobalPrefix("api/v1", {
-		exclude: [""],
+		exclude: [],
 	});
 
 	app.useGlobalPipes(
