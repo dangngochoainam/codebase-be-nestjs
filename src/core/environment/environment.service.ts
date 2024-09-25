@@ -1,6 +1,6 @@
 import { Injectable, Logger, ValueProvider } from "@nestjs/common";
 import { Exclude, Expose, plainToClass, Transform, Type } from "class-transformer";
-import { IsBoolean, IsNotEmpty, IsNumber, IsString, validateSync } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, validateSync } from "class-validator";
 import { createWriteStream } from "fs";
 import { optionalStringToBoolean, stringToBoolean } from "src/shared/utils/class-transformer";
 import dotenv from "dotenv";
@@ -35,6 +35,7 @@ export class CoreEnvironment {
 	@IsNotEmpty()
 	public LOG_DEBUG_MODE: boolean = false;
 
+	// DB-LOG connection
 	@Expose()
 	@IsString()
 	@Type(() => String)
@@ -70,6 +71,73 @@ export class CoreEnvironment {
 	@Type(() => String)
 	@IsNotEmpty()
 	public DB_LOG_PASSWORD!: string;
+
+	// Redis connection
+	@IsString()
+	@Type(() => String)
+	@Expose()
+	public REDIS_HOST: string = "localhost";
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	public REDIS_PORT: number = 6379;
+
+	@IsString()
+	@Expose()
+	@IsOptional()
+	public REDIS_USERNAME?: string;
+
+	@IsString()
+	@Expose()
+	@IsOptional()
+	// @Transform(({ value, obj }) => decryptEnvValueByAES(value, obj.PASSWORD_ENCRYPTION_KEY))
+	public REDIS_PASSWORD?: string;
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	@IsOptional()
+	public REDIS_SLOTS_REFRESH_TIMEOUT: number = 1000;
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	@IsOptional()
+	public REDIS_SLOTS_REFRESH_INTERVAL: number = 5000;
+
+	@IsBoolean()
+	@Expose()
+	@IsOptional()
+	@Transform(optionalStringToBoolean)
+	public REDIS_SSL_ENABLED: boolean = false;
+
+	@IsString()
+	@Expose()
+	@IsOptional()
+	public REDIS_SSL_CA_CERT_PATH: string = "";
+
+	@IsString()
+	@Expose()
+	@IsOptional()
+	public REDIS_SSL_CERT_PATH: string = "";
+
+	@IsString()
+	@Expose()
+	@IsOptional()
+	public REDIS_SSL_KEY_PATH: string = "";
+
+	@IsNumber()
+	@Expose()
+	@Type(() => Number)
+	@IsOptional()
+	public REDIS_TIMEOUT: number = 10000;
+
+	@IsBoolean()
+	@Expose()
+	@IsOptional()
+	@Transform(optionalStringToBoolean)
+	public REDIS_SSL_REJECT_UNAUTHORIZED: boolean = true;
 }
 
 @Injectable()

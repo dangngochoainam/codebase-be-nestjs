@@ -13,6 +13,7 @@ import { DBLogger } from "./core/logger/db-logger";
 import { UserModule } from "./module/user/user.module";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { ExampleResponseInterceptor } from "./module/interceptor/response.interceptor";
+import { RedisCacheModule } from "./core/cache/cache.module";
 
 @Module({
 	imports: [
@@ -47,6 +48,7 @@ import { ExampleResponseInterceptor } from "./module/interceptor/response.interc
 				}) as TypeOrmModuleOptions,
 		}),
 		UserModule,
+		RedisCacheModule,
 	],
 	controllers: [AppController],
 	providers: [
