@@ -1,19 +1,24 @@
 import { Module } from "@nestjs/common";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
+import { AuthGatewayModule } from "./core/auth-gateway/auth-gateway.module";
+import { RedisCacheModule } from "./core/cache/cache.module";
+import { CryptoModule } from "./core/crypto/crypto.module";
 import { CoreEnvironmentService } from "./core/environment/environment.service";
 import { CoreEnvironmentModule } from "./core/environment/evironment.module";
-import { LoggerModule, SQL_LOGGER_PROVIDER } from "./core/logger/logger.module";
-import { LogDbModule } from "./db-log/db.module";
-import { ExampleEnvironment } from "./module/environment/environment";
-import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
-import { typeOrmOptions as exampleTypeOrmOptions } from "./db-example/typeorm.module";
-import { SqlLoggerService } from "./db-log/module/sql-logger/sql-logger.service";
 import { DBLogger } from "./core/logger/db-logger";
-import { UserModule } from "./module/user/user.module";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { LoggerModule, SQL_LOGGER_PROVIDER } from "./core/logger/logger.module";
+import { PermissionInterceptor } from "./core/permission/permission.interceptor";
+import { typeOrmOptions as exampleTypeOrmOptions } from "./db-example/typeorm.module";
+import { LogDbModule } from "./db-log/db.module";
+import { SqlLoggerService } from "./db-log/module/sql-logger/sql-logger.service";
+import { AuthModule } from "./module/auth/auth.module";
+import { ExampleEnvironment } from "./module/environment/environment";
 import { ExampleResponseInterceptor } from "./module/interceptor/response.interceptor";
-import { RedisCacheModule } from "./core/cache/cache.module";
+import { UserModule } from "./module/user/user.module";
+import { SignContractModule } from "./module/sign-contract/sign-contract.module";
 
 @Module({
 	imports: [
@@ -49,10 +54,18 @@ import { RedisCacheModule } from "./core/cache/cache.module";
 		}),
 		UserModule,
 		RedisCacheModule,
+		AuthGatewayModule,
+		CryptoModule,
+		AuthModule,
+		SignContractModule,
 	],
 	controllers: [AppController],
 	providers: [
 		AppService,
+		{
+			provide: APP_INTERCEPTOR,
+			useClass: PermissionInterceptor,
+		},
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: ExampleResponseInterceptor,

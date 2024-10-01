@@ -138,6 +138,30 @@ export class CoreEnvironment {
 	@IsOptional()
 	@Transform(optionalStringToBoolean)
 	public REDIS_SSL_REJECT_UNAUTHORIZED: boolean = true;
+
+	// SETUP JWT
+	@IsString()
+	@Expose()
+	public JWT_SECRET!: string;
+
+	@IsString()
+	@Expose()
+	public JWT_ISSUER: string = "CIMB";
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	public TOKEN_EXPIRE: number = 600; // seconds
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	public TOKEN_LIFETIME = 1200000;
+
+	@IsNumber()
+	@Type(() => Number)
+	@Expose()
+	public TOKEN_REFRESH_TIME_WINDOW = 30000;
 }
 
 @Injectable()
