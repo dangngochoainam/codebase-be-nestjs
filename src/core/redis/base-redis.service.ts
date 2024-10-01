@@ -1,16 +1,16 @@
 import { Injectable, OnModuleInit } from "@nestjs/common";
 import { readFileSync } from "fs";
 import { Redis } from "ioredis";
-import { ExampleEnvironment } from "src/module/environment/environment";
-import { CoreEnvironmentService } from "../environment/environment.service";
+import { CoreEnvironment, CoreEnvironmentService } from "../environment/environment.service";
 import { ContextLogger, LoggerService } from "../logger/logger.service";
+import { concatMap, defaultIfEmpty, filter, fromEvent, lastValueFrom, Observable, takeUntil } from "rxjs";
 
 @Injectable()
 class BaseRedis implements OnModuleInit {
 	protected logger!: ContextLogger;
 	public readonly redisClient: Redis;
 	public constructor(
-		protected envService: CoreEnvironmentService<ExampleEnvironment>,
+		protected envService: CoreEnvironmentService<CoreEnvironment>,
 		protected loggerService: LoggerService,
 	) {
 		this.logger = loggerService.newContextLogger(this.constructor.name);
@@ -85,6 +85,57 @@ export abstract class AbstractRedisService<NS> extends BaseRedis {
 
 	public async get(key: string): Promise<string | null> {
 		return this.redisClient.get(this.cacheKey(key));
+	}
+
+	// TODO:
+	public async getKeys(subPattern: string): Promise<Array<string>> {
+		const res: string[] = [];
+		const nodes = [this.redisClient];
+		await Promise.all(
+			nodes.map(async (node) => {
+				const keys = await node.keys(`${this.cacheKey(subPattern)}`);
+				res.push(...keys);
+			}),
+		);
+		return res.map((k) => k.replace(this.cacheKey(""), ""));
+	}
+
+	// TODO:
+	public scan(subPattern: string): Observable<string[]> {
+		const stream = this.redisClient.sscanStream(`${this.cacheKey(subPattern)}`, {
+			match: `${this.cacheKey(subPattern)}`,
+			count: 1000,
+		});
+		return (fromEvent(stream, "data") as Observable<string[] | undefined>).pipe(
+			filter((keys: string[] | undefined): keys is string[] => !!(keys && keys.length)),
+			takeUntil(fromEvent(stream, "end")),
+			defaultIfEmpty([]),
+		);
+	}
+
+	/**
+	 * All keys in this service's namespace
+	 */
+	protected keys(): Observable<string[]> {
+		return this.scan("*");
+	}
+	// TODO:
+	public async flush(): Promise<boolean> {
+		this.logger.log({}, `Flushing redis cache ${this.cacheKey("")}`);
+		let count = 0;
+		const gen = this.keys();
+		await lastValueFrom(
+			gen.pipe(
+				concatMap(async (keys) => {
+					if (!keys.length) return;
+					count += keys.length;
+					await this.redisClient.unlink(keys);
+					this.logger.log({}, `Flushed keys ${keys}`);
+				}),
+			),
+		);
+		this.logger.log({}, `Flushed ${count} keys`);
+		return true;
 	}
 
 	public async incr(key: string): Promise<number> {
