@@ -19,6 +19,8 @@ import { ExampleEnvironment } from "./module/environment/environment";
 import { ExampleResponseInterceptor } from "./module/interceptor/response.interceptor";
 import { UserModule } from "./module/user/user.module";
 import { SignContractModule } from "./module/sign-contract/sign-contract.module";
+import { TestDynamicModule } from "./module/dynamic-module/dynamic.module";
+import { TestDynamicRegisterModule } from "./module/dynamic-module/test-dynamic-module-register/test-dynamic-module-register.module";
 
 @Module({
 	imports: [
@@ -58,6 +60,8 @@ import { SignContractModule } from "./module/sign-contract/sign-contract.module"
 		CryptoModule,
 		AuthModule,
 		SignContractModule,
+		TestDynamicModule.register({ description: "import test dynamic module register at App" }),
+		TestDynamicRegisterModule,
 	],
 	controllers: [AppController],
 	providers: [
