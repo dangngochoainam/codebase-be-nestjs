@@ -21,6 +21,7 @@ import { UserModule } from "./module/user/user.module";
 import { SignContractModule } from "./module/sign-contract/sign-contract.module";
 import { TestDynamicModule } from "./module/dynamic-module/dynamic.module";
 import { TestDynamicRegisterModule } from "./module/dynamic-module/test-dynamic-module-register/test-dynamic-module-register.module";
+import { FetchTestModule } from "./module/fetch-test/fetch-test.module";
 
 @Module({
 	imports: [
@@ -62,6 +63,7 @@ import { TestDynamicRegisterModule } from "./module/dynamic-module/test-dynamic-
 		SignContractModule,
 		TestDynamicModule.register({ description: "import test dynamic module register at App" }),
 		TestDynamicRegisterModule,
+		FetchTestModule,
 	],
 	controllers: [AppController],
 	providers: [
