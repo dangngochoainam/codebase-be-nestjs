@@ -1,7 +1,7 @@
 FROM node:20-alpine
 
 # Set the working directory inside the container
-WORKDIR /usr/src/codebase
+WORKDIR /app/node/src
 
 # Copy package.json and package-lock.json to the working directory
 COPY package*.json ./
@@ -16,7 +16,7 @@ COPY . ./
 # RUN npm run build
 
 # Expose the port the app runs on
-EXPOSE 9000 9229
+EXPOSE 9009 9229
 
 # Define the command to run the application
 CMD ["npm", "run", "start:dev"]
