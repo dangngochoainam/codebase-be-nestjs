@@ -22,6 +22,8 @@ import { SignContractModule } from "./module/sign-contract/sign-contract.module"
 import { TestDynamicModule } from "./module/dynamic-module/dynamic.module";
 import { TestDynamicRegisterModule } from "./module/dynamic-module/test-dynamic-module-register/test-dynamic-module-register.module";
 import { FetchTestModule } from "./module/fetch-test/fetch-test.module";
+import { AmqpModule } from "./core/amqp/amqp.module";
+import { RabbitMQModule } from "./module/rabbitmq-test/rabbitmq.module";
 
 @Module({
 	imports: [
@@ -64,6 +66,8 @@ import { FetchTestModule } from "./module/fetch-test/fetch-test.module";
 		TestDynamicModule.register({ description: "import test dynamic module register at App" }),
 		TestDynamicRegisterModule,
 		FetchTestModule,
+		AmqpModule,
+		RabbitMQModule,
 	],
 	controllers: [AppController],
 	providers: [

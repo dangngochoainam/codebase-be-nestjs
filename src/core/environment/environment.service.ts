@@ -4,6 +4,7 @@ import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString, validateSync } f
 import { createWriteStream } from "fs";
 import { optionalStringToBoolean, stringToBoolean } from "src/shared/utils/class-transformer";
 import dotenv from "dotenv";
+
 dotenv.config();
 
 @Exclude()
@@ -71,6 +72,21 @@ export class CoreEnvironment {
 	@Type(() => String)
 	@IsNotEmpty()
 	public DB_LOG_PASSWORD!: string;
+
+	// RabbitMQ
+	@Expose()
+	@IsString()
+	public MQ_HOSTNAME: string = "amqp:5672";
+
+	@IsString()
+	@Type(() => String)
+	@Expose()
+	public MQ_USERNAME: string = "guest";
+
+	@IsString()
+	@Type(() => String)
+	@Expose()
+	public MQ_PASSWORD: string = "guest";
 
 	// Redis connection
 	@IsString()
