@@ -15,7 +15,9 @@ export class FetchTestService {
 	}
 
 	public async callRawTest(): Promise<any> {
-		const response = await this.fetchService.callRaw(new GetProfileDTO({ id: "b0ce42dc-21a7-4ba1-8193-ab046c0380f1" }));
+		const response = await this.fetchService.callRaw(
+			new GetProfileDTO({ id: "b0ce42dc-21a7-4ba1-8193-ab046c0380f1" }),
+		);
 		this.logger.info({}, "ajdskfsa");
 		return response;
 	}
