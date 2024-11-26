@@ -40,17 +40,17 @@ class BaseRedis implements OnModuleInit {
 		if (!this.envService.ENVIRONMENT.LOG_DEBUG_MODE) {
 			return;
 		}
-		this.redisClient.monitor((err?: Error | null, monitor?: Redis) => {
-			if (err) {
-				this.logger.error({}, err, err);
-			}
-			this.logger.info({}, "Entering monitoring mode...");
-			monitor &&
-				monitor.on("monitor", (_time, args, _source) => {
-					this.logger.info({}, `Command: ${args.join(" ")}`);
-				});
-			return this.redisClient;
-		});
+		// this.redisClient.monitor((err?: Error | null, monitor?: Redis) => {
+		// 	if (err) {
+		// 		this.logger.error({}, err, err);
+		// 	}
+		// 	this.logger.info({}, "Entering monitoring mode...");
+		// 	monitor &&
+		// 		monitor.on("monitor", (_time, args, _source) => {
+		// 			this.logger.info({}, `Command: ${args.join(" ")}`);
+		// 		});
+		// 	return this.redisClient;
+		// });
 	}
 }
 

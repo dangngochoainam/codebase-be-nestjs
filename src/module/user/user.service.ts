@@ -23,26 +23,39 @@ export class UserService {
 	}
 
 	public async getUserList(query: GetUserListQueryDTO): Promise<GetUserListResponseDTO> {
-		const userList = await this.userRepository.sqlFind(undefined, {
+		const [userList, totalRecord] = await this.userRepository.findAndCount(undefined, {
 			where: {
 				email: query.email,
 			},
+			order: {
+				[query.orderBy]: query.order,
+			},
+			skip: query.skip,
+			take: query.pageSize,
 		});
 		const userItemDTO = plainToInstance(UserItemDTO, userList);
 		const result = new GetUserListResponseDTO(
 			userItemDTO,
 			query.page as number,
-			userList.length,
+			totalRecord,
 			query.pageSize as number,
 		);
 
 		return result;
 	}
 
+	private cacheKeyForProfile(id: string): string {
+		return `profile:${id}`;
+	}
+
 	public async getProfile(params: GetProfileParamDTO): Promise<GetProfileResponseDTO> {
 		const user = await this.userRepository.sqlFindOne(undefined, {
 			where: {
 				id: params.id,
+			},
+			cache: {
+				id: this.cacheKeyForProfile(params.id),
+				milliseconds: 20000,
 			},
 		});
 
