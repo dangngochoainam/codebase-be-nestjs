@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -24,6 +24,10 @@ import { TestDynamicRegisterModule } from "./module/dynamic-module/test-dynamic-
 import { FetchTestModule } from "./module/fetch-test/fetch-test.module";
 import { AmqpModule } from "./core/amqp/amqp.module";
 import { RabbitMQModule } from "./module/rabbitmq-test/rabbitmq.module";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { ThrottlerStorageRedisService } from "@nest-lab/throttler-storage-redis";
+import { Redis } from "ioredis";
+import { readFileSync } from "fs";
 
 @Module({
 	imports: [
@@ -55,6 +59,14 @@ import { RabbitMQModule } from "./module/rabbitmq-test/rabbitmq.module";
 					password: env.ENVIRONMENT.DB_EXAMPLE_PASSWORD,
 					...exampleTypeOrmOptions,
 					logger: new DBLogger(sqlLoggerService, "Example__Service__DB", exampleTypeOrmOptions.name || ""),
+					cache: {
+						type: "ioredis",
+						options: {
+							host: env.ENVIRONMENT.REDIS_HOST,
+							port: env.ENVIRONMENT.REDIS_PORT,
+							password: env.ENVIRONMENT.REDIS_PASSWORD,
+						},
+					},
 				}) as TypeOrmModuleOptions,
 		}),
 		UserModule,
@@ -68,6 +80,42 @@ import { RabbitMQModule } from "./module/rabbitmq-test/rabbitmq.module";
 		FetchTestModule,
 		AmqpModule,
 		RabbitMQModule,
+		ThrottlerModule.forRootAsync({
+			useFactory: (env: CoreEnvironmentService<ExampleEnvironment>) => {
+				return {
+					throttlers: [
+						{
+							ttl: env.ENVIRONMENT.THROTTLE_TTL,
+							limit: env.ENVIRONMENT.THROTTLE_LIMIT,
+						},
+					],
+					storage: new ThrottlerStorageRedisService(
+						new Redis({
+							host: env.ENVIRONMENT.REDIS_HOST,
+							port: env.ENVIRONMENT.REDIS_PORT,
+							connectTimeout: env.ENVIRONMENT.REDIS_TIMEOUT,
+							commandTimeout: env.ENVIRONMENT.REDIS_TIMEOUT,
+							username: env.ENVIRONMENT.REDIS_USERNAME,
+							password: env.ENVIRONMENT.REDIS_PASSWORD,
+							...(env.ENVIRONMENT.REDIS_SSL_ENABLED
+								? {
+										tls: {
+											ca: readFileSync(env.ENVIRONMENT.REDIS_SSL_CA_CERT_PATH),
+											cert: readFileSync(env.ENVIRONMENT.REDIS_SSL_CERT_PATH),
+											key: readFileSync(env.ENVIRONMENT.REDIS_SSL_KEY_PATH),
+											rejectUnauthorized: env.ENVIRONMENT.REDIS_SSL_REJECT_UNAUTHORIZED,
+										},
+									}
+								: {}),
+							// slotsRefreshTimeout: envService.ENVIRONMENT.REDIS_SLOTS_REFRESH_TIMEOUT,
+							// slotsRefreshInterval: envService.ENVIRONMENT.REDIS_SLOTS_REFRESH_INTERVAL,
+							showFriendlyErrorStack: true,
+						}),
+					),
+				};
+			},
+			inject: [CoreEnvironmentService],
+		}),
 	],
 	controllers: [AppController],
 	providers: [
@@ -79,6 +127,10 @@ import { RabbitMQModule } from "./module/rabbitmq-test/rabbitmq.module";
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: ExampleResponseInterceptor,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })
