@@ -1,7 +1,7 @@
 export NODE_ENV=dev 
 export SHOW_DEBUG_ERROR=true 
 export INSTANCE_ID=INSTANCE_ID_123214921847 
-export LOG_DEBUG_MODE=false 
+export LOG_DEBUG_MODE=true 
 export MQ_HOSTNAME=localhost:5674 
 export MQ_USERNAME=guest 
 export MQ_PASSWORD=guest 
@@ -35,3 +35,5 @@ export DB_LOG_PASSWORD=Abc12345
 export REDIS_USERNAME=undefined 
 export REDIS_PASSWORD=Abc12345 
 export JWT_SECRET=adhfjasdsgdfjglkd 
+export THROTTLE_TTL=60000 
+export THROTTLE_LIMIT=5 

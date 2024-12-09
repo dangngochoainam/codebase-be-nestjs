@@ -28,6 +28,7 @@ import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
 import { ThrottlerStorageRedisService } from "@nest-lab/throttler-storage-redis";
 import { Redis } from "ioredis";
 import { readFileSync } from "fs";
+import { StreamTestModule } from "./module/stream-test/stream-test.module";
 
 @Module({
 	imports: [
@@ -80,6 +81,7 @@ import { readFileSync } from "fs";
 		FetchTestModule,
 		AmqpModule,
 		RabbitMQModule,
+		StreamTestModule,
 		ThrottlerModule.forRootAsync({
 			useFactory: (env: CoreEnvironmentService<ExampleEnvironment>) => {
 				return {
