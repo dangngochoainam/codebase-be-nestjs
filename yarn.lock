@@ -5247,6 +5247,11 @@ pg-connection-string@^2.6.4:
   resolved "https://registry.npmjs.org/pg-connection-string/-/pg-connection-string-2.6.4.tgz"
   integrity sha512-v+Z7W/0EO707aNMaAEfiGnGL9sxxumwLl2fJvCQtMn9Fxsg+lPpPkdcyBSv/KFgpGdYkMfn+EI1Or2EHjpgLCA==
 
+pg-cursor@^2.12.1:
+  version "2.12.1"
+  resolved "https://registry.npmjs.org/pg-cursor/-/pg-cursor-2.12.1.tgz"
+  integrity sha512-V13tEaA9Oq1w+V6Q3UBIB/blxJrwbbr35/dY54r/86soBJ7xkP236bXaORUTVXUPt9B6Ql2BQu+uwQiuMfRVgg==
+
 pg-int8@1.0.1:
   version "1.0.1"
   resolved "https://registry.npmjs.org/pg-int8/-/pg-int8-1.0.1.tgz"
@@ -5262,6 +5267,13 @@ pg-protocol@^1.6.1:
   resolved "https://registry.npmjs.org/pg-protocol/-/pg-protocol-1.6.1.tgz"
   integrity sha512-jPIlvgoD63hrEuihvIg+tJhoGjUsLPn6poJY9N5CnlPd91c2T18T/9zBtLxZSb1EhYxBRoZJtzScCaWlYLtktg==
 
+pg-query-stream@^4.0.0, pg-query-stream@^4.7.1:
+  version "4.7.1"
+  resolved "https://registry.npmjs.org/pg-query-stream/-/pg-query-stream-4.7.1.tgz"
+  integrity sha512-UMgsgn/pOIYsIifRySp59vwlpTpLADMK9HWJtq5ff0Z3MxBnPMGnCQeaQl5VuL+7ov4F96mSzIRIcz+Duo6OiQ==
+  dependencies:
+    pg-cursor "^2.12.1"
+
 pg-types@^2.1.0:
   version "2.2.0"
   resolved "https://registry.npmjs.org/pg-types/-/pg-types-2.2.0.tgz"
@@ -5273,7 +5285,7 @@ pg-types@^2.1.0:
     postgres-date "~1.0.4"
     postgres-interval "^1.1.0"
 
-pg@^8.12.0, pg@^8.5.1, pg@>=8.0:
+pg@^8, pg@^8.12.0, pg@^8.5.1, pg@>=8.0:
   version "8.12.0"
   resolved "https://registry.npmjs.org/pg/-/pg-8.12.0.tgz"
   integrity sha512-A+LHUSnwnxrnL/tZ+OLfqR1SxLN3c/pgDztZ47Rpbsd4jUytsTtwQo/TLPRzPJMp/1pbhYVhH9cuSZLAajNfjQ==
